@@ -40,10 +40,6 @@
     "server/**/*.js":[
       "eslint --fix",
       "git add"
-    ],
-    "client/**/*.js":[
-      "eslint --fix",
-      "git add"
     ]
   }
 }
