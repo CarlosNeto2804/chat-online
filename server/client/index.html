@@ -1,35 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./style.css" />
     <title>CHAT</title>
-</head>
-<body>
+  </head>
+
+  <body>
     <form id="chat">
-        <input type="text" name="username" placeholder="Digite seu username">
-        <div class="messages"></div>
-        <input type="text" name="message" placeholder="Mensagem...">
-        <button type="submit">Enviar</button>
+      <input type="text" name="username" placeholder="Digite seu username" />
+      <div class="messages"></div>
+      <input type="text" name="message" placeholder="Mensagem..." />
+      <button type="submit">Enviar</button>
     </form>
     <script type="text/javascript">
-        var socket = io("http://localhost:3000")
-        $('#chat').submit(function(event){
-            event.preventDefault();
-            var usuario = $('input[name=username]').val();
-            var input_message =  $('input[name=message]').val();
-            if(usuario.length && input_message.length){
-                var message = {
-                    author:usuario,
-                    message:input_message,
-                }
-                socket.emit('sendMessage',message)
-            }
-        })
+      function showMessages(message) {
+        $('.messages').append(
+          '<div class="message"><strong>' +
+            message.author +
+            ':</strong>' +
+            message.message +
+            '</div>'
+        );
+      }
+      var socket = io('http://localhost:3000');
+      socket.on('recivedMessage', function(message) {
+        showMessages(message);
+      });
+      socket.on('loadMessages', function(messages) {
+        for (const message of messages) {
+          showMessages(message);
+        }
+      });
+      $('#chat').submit(function(event) {
+        event.preventDefault();
+        var usuario = $('input[name=username]').val();
+        var input_message = $('input[name=message]').val();
+        if (usuario.length && input_message.length) {
+          var message = {
+            author: usuario,
+            message: input_message,
+          };
+          socket.emit('sendMessage', message);
+          showMessages(message);
+        }
+      });
     </script>
-</body>
+  </body>
 </html>
