@@ -18,7 +18,7 @@
       <button type="submit">Enviar</button>
     </form>
     <script type="text/javascript">
-      function showMessages(message) {
+      const showMessages = message => {
         $('.messages').append(
           '<div class="message"><strong>' +
             message.author +
@@ -26,8 +26,8 @@
             message.message +
             '</div>'
         );
-      }
-      var socket = io('http://192.168.25.106:3001');
+      };
+      const socket = io('http://192.168.25.106:3001');
       socket.on('recivedMessage', function(message) {
         showMessages(message);
       });
